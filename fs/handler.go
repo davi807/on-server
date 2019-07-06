@@ -34,9 +34,8 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 		var page string
 
-		println(filesRoot + "/")
 		page = top +
-			makeList(filesRoot+"/", files) +
+			makeList(URLRoot+fileName, files) +
 			bottom
 
 		w.Write([]byte(page))

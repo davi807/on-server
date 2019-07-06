@@ -4,9 +4,11 @@ const top string = `<!doctype html>
 <head>
   <title>File list</title>
   <style>
-
+    td{
+      padding-right: 8px;
+    }
   </style>
 </head>
-<body>`
+<body><table>`
 
-const bottom string = `</body>`
+const bottom string = `</table></body>`

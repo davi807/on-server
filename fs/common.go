@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // URLRoot is static file server handler location
@@ -31,7 +32,7 @@ func init() {
 
 func formatSize(size int64) string {
 	if size < 1024 {
-		return strconv.FormatInt(size, 10)
+		return strconv.FormatInt(size, 10) + "B"
 	}
 
 	var finalSize = float64(size)
@@ -51,34 +52,43 @@ func formatSize(size int64) string {
 
 func makeFileTemplate(root string, f os.FileInfo) string {
 
-	row := `<div class="file-row">`
+	row := `<tr class="file-row">`
 
-	row += `<span class="file-type">`
+	row += `<td class="file-type">`
 	if f.IsDir() {
-		row += `🗀.`
+		row += `🗀`
 	} else {
-		row += `📄`
+		row += `.📄`
 	}
-	row += `</span>`
+	row += `</td>`
 
-	row += `<span class="file-name">` +
-		`<a href="` + URLRoot + f.Name() + `"`
+	row += `<td class="file-name">` +
+		`<a href="` + root + "/" + f.Name() + `"`
 	if !f.IsDir() {
 		row += ` target="_blank"`
 	}
 	row += `>` + f.Name() + `</a>` +
-		`</span>`
+		`</td>`
 
-	row += `<span class="file-size">` + formatSize(f.Size()) + `</span>`
+	row += `<td class="file-size">` + formatSize(f.Size()) + `</td>`
 
-	row += `<span class="file-modtime">` + f.ModTime().Format("2-1-2006 15:04") + `</span>`
+	row += `<td class="file-modtime">` + f.ModTime().Format("2-1-2006 15:04") + `</td>`
 
-	row += `</div>`
+	row += `</tr>`
 	return row
 }
 
 func makeList(root string, list []os.FileInfo) string {
-	var result string
+	var path = strings.Replace(root, URLRoot, "/", 1)
+
+	var result = "<h1>Index of " + path + "</h1>"
+
+	result += `<tr>
+		<th></th>
+		<th>Name</th>
+		<th>Size</th>
+		<th>Last Modified</th>
+	</tr>`
 
 	for _, item := range list {
 		result += makeFileTemplate(root, item)
