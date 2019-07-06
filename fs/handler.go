@@ -3,6 +3,7 @@ package fs
 import (
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 )
@@ -12,7 +13,13 @@ type Handler struct{}
 
 func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fileName := strings.Replace(r.RequestURI, URLRoot, "", 1)
-	filePath := filesRoot + "/" + fileName
+	filePath, err := url.QueryUnescape(filesRoot + "/" + fileName)
+
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte(`Server error`))
+		return
+	}
 
 	fileInfo, err := os.Stat(filePath)
 	if err != nil {
