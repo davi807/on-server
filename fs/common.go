@@ -78,6 +78,13 @@ func makeFileTemplate(root string, f os.FileInfo) string {
 	return row
 }
 
+func upLink(u string) string {
+	if u[len(u)-1] == '/' {
+		u = u[0 : len(u)-2]
+	}
+	return u[0:strings.LastIndex(u, "/")]
+}
+
 func makeList(root string, list []os.FileInfo) string {
 	var path = strings.Replace(root, URLRoot, "/", 1)
 
@@ -89,6 +96,16 @@ func makeList(root string, list []os.FileInfo) string {
 		<th>Size</th>
 		<th>Last Modified</th>
 	</tr>`
+
+	if path == "/" {
+		if root == "/" {
+			root = ""
+		}
+	} else {
+		result += `<tr><td></td>` +
+			`<td><a href="` + upLink(root) + `">../</a></td>` +
+			`<td></td><td></td></tr>`
+	}
 
 	for _, item := range list {
 		result += makeFileTemplate(root, item)
