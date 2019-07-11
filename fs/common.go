@@ -8,7 +8,7 @@ import (
 )
 
 // URLRoot is static file server handler location
-var URLRoot = "/files-list/"
+var URLRoot = "/files/"
 
 // SetFilesRoot location of files list
 func SetFilesRoot(addr string) {
