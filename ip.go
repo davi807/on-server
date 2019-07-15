@@ -41,6 +41,7 @@ func ipList(showIP6 bool) []string {
 }
 
 func startText(ips []string, port string) (result string) {
+	println("Server start on:\n=============")
 	for _, ip := range ips {
 		result += "http://" + ip + ":" + port + "\n"
 	}

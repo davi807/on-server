@@ -69,6 +69,7 @@ func validateFlags() error {
 
 	// server paths
 	if len(flags.path) > 0 {
+		flags.path = cleanPath(flags.path)
 		if info, err := os.Stat(flags.path); err != nil || !info.IsDir() {
 			return errors.New("Wrong 'path' argument")
 		}
@@ -77,6 +78,7 @@ func validateFlags() error {
 	}
 
 	if len(flags.messagePath) > 0 {
+		flags.messagePath = cleanPath(flags.messagePath)
 		if info, err := os.Stat(flags.messagePath); !(err == nil && info.IsDir()) {
 			return errors.New("Wrong 'message-path' argument")
 		}
@@ -85,6 +87,7 @@ func validateFlags() error {
 	}
 
 	if len(flags.uploadPath) > 0 {
+		flags.uploadPath = cleanPath(flags.uploadPath)
 		if info, err := os.Stat(flags.uploadPath); !(err == nil && info.IsDir()) {
 			return errors.New("Wrong 'upload-path' argument")
 		}
@@ -98,4 +101,11 @@ func validateFlags() error {
 	}
 
 	return nil
+}
+
+func cleanPath(p string) string {
+	if p[len(p)-1] == '/' {
+		p = p[0 : len(p)-1]
+	}
+	return p
 }

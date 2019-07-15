@@ -6,6 +6,7 @@ import (
 	"on-server/fs"
 	"os"
 	"strconv"
+	"time"
 )
 
 func main() {
@@ -26,18 +27,18 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		log(r)
 		switch r.Method {
 		case "GET":
 			w.Header().Add("Content-Type", "text/html; charset=utf8")
 			w.Write([]byte(top + makeBody(!flags.noMessage, !flags.noUpload, !flags.noFiles) + bottom))
 		case "POST":
-			//todo upload
-			var limit int64 = flags.limit * (2 << 20)
+			var limit = flags.limit * (2 << 20)
 
 			if r.ContentLength > limit {
-
 				w.WriteHeader(400)
-				w.Write([]byte("Maximum data size is lagre then limit " + strconv.FormatInt(flags.limit, 10) + " Mb"))
+				w.Write([]byte("Data is lagrer then maximum size limit " + strconv.FormatInt(flags.limit, 10) + " Mb"))
+				return
 			}
 
 			r.Body = http.MaxBytesReader(w, r.Body, limit)
@@ -50,42 +51,25 @@ func main() {
 					break
 				}
 
-				//todo
-				if len(part.FileName()) > 0 {
+				if !flags.noMessage && part.FormName() == "message" {
+					data := make([]byte, 1024)
+					n, _ := part.Read(data)
+					if n == 0 {
+						continue
+					}
+					f, _ := os.Create(flags.messagePath + "/" + "msg-" + time.Now().Format("2-1-2006 21:04:05") + ".txt")
+					f.Write([]byte("Message source ip: " + r.RemoteAddr + "\n"))
+					f.Write(data[0:n])
+					io.Copy(f, part)
+					f.Close()
+				} else if !flags.noUpload && part.FormName() == "file" && len(part.FileName()) > 0 {
 					f, _ := os.Create(flags.uploadPath + "/" + part.FileName())
 					io.Copy(f, part)
 					f.Close()
 				}
 			}
+			http.Redirect(w, r, "/", 301)
 		}
-		/*
-
-
-				for {
-
-					part, err := parts.NextPart()
-
-					if err != nil {
-						break
-					}
-
-					if part.FormName() != "" {
-						fmt.Println("___++----", part.FormName())
-					}
-
-					b := make([]byte, 1024)
-					n, e := part.Read(b)
-
-					if n == 0 {
-						println("nothing", e)
-						continue
-					}
-					fmt.Println("__", string(b))
-				}
-
-				return
-			}
-		*/
 	})
 
 	if !flags.noFiles {
@@ -94,4 +78,13 @@ func main() {
 	}
 
 	http.ListenAndServe(flags.ip+":"+flags.port, nil)
+}
+
+func log(r *http.Request) {
+	sep := "   "
+	method := r.Method
+	if l := len(method); l < 4 {
+		method += " "
+	}
+	println(method + sep + time.Now().Format("2-1-2006 21:04:05") + sep + r.URL.RequestURI())
 }
