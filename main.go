@@ -62,8 +62,10 @@ func main() {
 		*/
 	})
 
-	fs.SetFilesRoot(flags.path)
-	http.Handle(fs.URLRoot, fs.Handler{})
+	if !flags.noFiles {
+		fs.SetFilesRoot(flags.path)
+		http.Handle(fs.URLRoot, fs.Handler{})
+	}
 
 	http.ListenAndServe(flags.ip+":"+flags.port, nil)
 }
