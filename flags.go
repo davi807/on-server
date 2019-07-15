@@ -48,8 +48,7 @@ func validateFlags() error {
 			return errors.New("Cant bind to address \n" + err.Error())
 		}
 		network := c.Addr().String()
-		index := strings.LastIndex(network, ":")
-		currentPort := network[index+1:]
+		currentPort := network[strings.LastIndex(network, ":")+1:]
 		c.Close()
 		// correct flags.port if set to get random port
 		if currentPort != flags.port {
