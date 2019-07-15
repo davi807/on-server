@@ -5,6 +5,7 @@ import (
 	"flag"
 	"net"
 	"os"
+	"strings"
 )
 
 var flags struct {
@@ -22,7 +23,7 @@ var flags struct {
 }
 
 func initFlags() error {
-	flag.StringVar(&flags.ip, "ip", "", "Server ip address, required IPv4, if not provided listens to all interfaces")
+	flag.StringVar(&flags.ip, "ip", "", "Server ip address, if not provided listens to all interfaces")
 	flag.StringVar(&flags.port, "port", "2100", "Port number")
 	flag.BoolVar(&flags.showIP6, "show-ip6", false, "Show IP6 addresses in list if 'ip' not provided")
 
@@ -41,12 +42,19 @@ func initFlags() error {
 
 func validateFlags() error {
 	// is address avaluble
-	if len(flags.ip) > 0 {
+	{
 		c, err := net.Listen("tcp", flags.ip+":"+flags.port)
 		if err != nil {
 			return errors.New("Cant bind to address \n" + err.Error())
 		}
+		network := c.Addr().String()
+		index := strings.LastIndex(network, ":")
+		currentPort := network[index+1:]
 		c.Close()
+		// correct flags.port if set to get random port
+		if currentPort != flags.port {
+			flags.port = currentPort
+		}
 	}
 
 	// get working direcctory
