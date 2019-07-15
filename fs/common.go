@@ -20,16 +20,6 @@ func SetFilesRoot(addr string) {
 
 var filesRoot string
 
-func init() {
-	var err error
-	filesRoot, err = os.Getwd()
-
-	if err != nil {
-		fmt.Printf("!! Can not initialize files root to current workig directory")
-	}
-
-}
-
 func formatSize(size int64) string {
 	if size < 1024 {
 		return strconv.FormatInt(size, 10) + "B"

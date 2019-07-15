@@ -40,7 +40,7 @@ func ipList(showIP6 bool) []string {
 	return IPs
 }
 
-func listURLIPs(ips []string, port string) (result string) {
+func startText(ips []string, port string) (result string) {
 	for _, ip := range ips {
 		result += "http://" + ip + ":" + port + "\n"
 	}
