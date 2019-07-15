@@ -1,8 +1,11 @@
 package main
 
 import (
+	"io"
 	"net/http"
 	"on-server/fs"
+	"os"
+	"strconv"
 )
 
 func main() {
@@ -29,36 +32,59 @@ func main() {
 			w.Write([]byte(top + makeBody(!flags.noMessage, !flags.noUpload, !flags.noFiles) + bottom))
 		case "POST":
 			//todo upload
+			var limit int64 = flags.limit * (2 << 20)
+
+			if r.ContentLength > limit {
+
+				w.WriteHeader(400)
+				w.Write([]byte("Maximum data size is lagre then limit " + strconv.FormatInt(flags.limit, 10) + " Mb"))
+			}
+
+			r.Body = http.MaxBytesReader(w, r.Body, limit)
+			defer r.Body.Close()
+
+			parts, _ := r.MultipartReader()
+			for {
+				part, err := parts.NextPart()
+				if err != nil {
+					break
+				}
+
+				//todo
+				if len(part.FileName()) > 0 {
+					f, _ := os.Create(flags.uploadPath + "/" + part.FileName())
+					io.Copy(f, part)
+					f.Close()
+				}
+			}
 		}
-		/*		switch r.Method == "POST" {
+		/*
 
-					parts, _ := r.MultipartReader()
 
-					for {
+				for {
 
-						part, err := parts.NextPart()
+					part, err := parts.NextPart()
 
-						if err != nil {
-							print("errrrrrrrrr")
-							break
-						}
-
-						if part.FormName() != "" {
-							fmt.Println("___++----", part.FormName())
-						}
-
-						b := make([]byte, 1024)
-						n, e := part.Read(b)
-
-						if n == 0 {
-							println("nothing", e)
-							continue
-						}
-						fmt.Println("__", string(b))
+					if err != nil {
+						break
 					}
 
-					return
+					if part.FormName() != "" {
+						fmt.Println("___++----", part.FormName())
+					}
+
+					b := make([]byte, 1024)
+					n, e := part.Read(b)
+
+					if n == 0 {
+						println("nothing", e)
+						continue
+					}
+					fmt.Println("__", string(b))
 				}
+
+				return
+			}
 		*/
 	})
 
