@@ -72,13 +72,19 @@ func upLink(u string) string {
 	if u[len(u)-1] == '/' {
 		u = u[0 : len(u)-2]
 	}
-	return u[0:strings.LastIndex(u, "/")]
+	path := u[0:strings.LastIndex(u, "/")]
+
+	if URLRoot == "/" && len(path) == 0 {
+		path = "/"
+	}
+
+	return path
 }
 
 func makeList(root string, list []os.FileInfo) string {
 	var path = strings.Replace(root, URLRoot, "/", 1)
 
-	var result = "<h1>Index of " + path + "</h1>"
+	var result = "<h1>Index of " + strings.Replace(path, "%20", " ", -1) + "</h1>"
 
 	result += `<tr>
 		<th></th>
