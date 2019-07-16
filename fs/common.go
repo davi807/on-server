@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"net/url"
 	"strings"
 )
 
@@ -84,7 +85,8 @@ func upLink(u string) string {
 func makeList(root string, list []os.FileInfo) string {
 	var path = strings.Replace(root, URLRoot, "/", 1)
 
-	var result = "<h1>Index of " + strings.Replace(path, "%20", " ", -1) + "</h1>"
+	q, _ := url.QueryUnescape(path)
+	var result = "<h1>Index of " + q + "</h1>"
 
 	result += `<tr>
 		<th></th>
