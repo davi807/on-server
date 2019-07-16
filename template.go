@@ -5,6 +5,7 @@ import "on-server/fs"
 const top string = `<!doctype html>
 <head>
   <title>File server</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>` +
 	`body{margin: 0;}
 .container{
@@ -63,7 +64,7 @@ func makeBody(msg bool, upload bool, files bool) string {
 			content += `<input type="file" name="file" multiple>`
 		}
 		content += `</form>
-		<button type="submit" form="data-form">Sand data</button>`
+		<button type="submit" form="data-form">Send data</button>`
 	}
 
 	if files {

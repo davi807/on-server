@@ -29,7 +29,7 @@ func initFlags() error {
 	flag.StringVar(&flags.port, "port", "2100", "Port number")
 	flag.BoolVar(&flags.showIP6, "show-ip6", false, "Show IP6 addresses in list if 'ip' not provided")
 
-	flag.Int64Var(&flags.limit, "sand-limit", 64, "Maximum allowed data to sand in MegaBytes")
+	flag.Int64Var(&flags.limit, "send-limit", 64, "Maximum allowed data to send in MegaBytes")
 
 	flag.StringVar(&flags.path, "path", "", "Server files root (default current path)")
 	flag.StringVar(&flags.messagePath, "message-path", "", "Text message files location (default current path)")
