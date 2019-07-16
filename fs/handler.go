@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Handle show file list
 func Handle(w http.ResponseWriter, r *http.Request) {
 	fileName := strings.Replace(r.RequestURI, URLRoot, "", 1)
 	filePath, err := url.QueryUnescape(filesRoot + "/" + fileName)
