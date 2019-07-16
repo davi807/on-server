@@ -8,10 +8,7 @@ import (
 	"strings"
 )
 
-// Handler simple struct to handle files list from main function
-type Handler struct{}
-
-func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func Handle(w http.ResponseWriter, r *http.Request) {
 	fileName := strings.Replace(r.RequestURI, URLRoot, "", 1)
 	filePath, err := url.QueryUnescape(filesRoot + "/" + fileName)
 

@@ -55,7 +55,7 @@ button[type=submit]{
 func makeBody(msg bool, upload bool, files bool) string {
 	content := `<div class="flex column container">`
 	if msg || upload {
-		content += `<form id="data-form" action="/" method="post" enctype="multipart/form-data" class="flex row">`
+		content += `<form id="data-form" action="/upload" method="post" enctype="multipart/form-data" class="flex row">`
 		if msg {
 			content += `<textarea class="msg" name="message" rows="4" placeholder="Type your message here."></textarea>`
 		}
