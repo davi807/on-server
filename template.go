@@ -5,7 +5,7 @@ import "on-server/fs"
 const top string = `<!doctype html>
 <head>
   <title>File server</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=0.5">
 <style>` +
 	`body{margin: 0;}
 .container{
