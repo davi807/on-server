@@ -7,11 +7,7 @@ import (
 )
 
 func main() {
-
-	var err error
-
-	err = initFlags()
-
+	err := initFlags()
 	if err != nil {
 		println(err.Error())
 		return
@@ -44,8 +40,14 @@ func main() {
 		})
 	}
 
+	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+	})
+
 	http.ListenAndServe(flags.ip+":"+flags.port, nil)
 }
+
+/*** ***/
 
 func log(r *http.Request) {
 	sep := "   "

@@ -34,13 +34,31 @@ func uploadHandle(w http.ResponseWriter, r *http.Request) {
 				if n == 0 {
 					continue
 				}
-				f, _ := os.Create(flags.messagePath + "/" + "msg-" + time.Now().Format("2-1-2006 15:04:05") + ".txt")
+
+				f, err := os.Create(flags.messagePath + "/" + "msg-" + time.Now().Format("2-1-2006 15:04:05") + ".txt")
+				if err != nil {
+					setError(w, 500, "Nessage not saved :(")
+					return
+				}
+
 				f.Write([]byte("Message source address: " + r.RemoteAddr + "\n"))
 				f.Write(data[0:n])
 				io.Copy(f, part)
 				f.Close()
 			} else if !flags.noUpload && part.FormName() == "file" && len(part.FileName()) > 0 {
-				f, _ := os.Create(flags.uploadPath + "/" + part.FileName())
+
+				if _, err := os.Stat(flags.uploadPath + "/" + part.FileName()); err == nil {
+					setError(w, 400, "File '"+part.FileName()+"' already exists, try to change file name.")
+					return
+				}
+
+				f, err := os.Create(flags.uploadPath + "/" + part.FileName())
+
+				if err != nil {
+					setError(w, 500, "Can not upload file :(")
+					return
+				}
+
 				io.Copy(f, part)
 				f.Close()
 			}
@@ -48,4 +66,9 @@ func uploadHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/", 301)
+}
+
+func setError(w http.ResponseWriter, status int, msg string) {
+	w.WriteHeader(status)
+	w.Write([]byte(msg))
 }
