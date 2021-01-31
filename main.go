@@ -36,7 +36,7 @@ func main() {
 		fs.SetFilesRoot(flags.path)
 		http.HandleFunc(fs.URLRoot, func(w http.ResponseWriter, r *http.Request) {
 			log(r)
-			fs.Handle(w, r)
+			fs.Handle(w, r, flags.enableIndex)
 		})
 	}
 

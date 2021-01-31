@@ -19,6 +19,8 @@ var flags struct {
 
 	limit int64
 
+	enableIndex bool
+
 	noMessage bool
 	noUpload  bool
 	noFiles   bool
@@ -34,6 +36,8 @@ func initFlags() error {
 	flag.StringVar(&flags.path, "path", "", "Server files root (default current path)")
 	flag.StringVar(&flags.messagePath, "message-path", "", "Text message files location (default current path)")
 	flag.StringVar(&flags.uploadPath, "upload-path", "", "Uploaded files location (default current path)")
+
+	flag.BoolVar(&flags.enableIndex, "enable-index", false, "Enable use of index.html file if it contain in folder")
 
 	flag.BoolVar(&flags.noMessage, "no-message", false, "Disable text submit")
 	flag.BoolVar(&flags.noUpload, "no-upload", false, "Disable file upload")

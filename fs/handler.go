@@ -9,7 +9,7 @@ import (
 )
 
 // Handle show file list
-func Handle(w http.ResponseWriter, r *http.Request) {
+func Handle(w http.ResponseWriter, r *http.Request, enableIndex bool) {
 	fileName := strings.Replace(r.RequestURI, URLRoot, "", 1)
 	filePath, err := url.QueryUnescape(filesRoot + "/" + fileName)
 
@@ -18,7 +18,6 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`Server error`))
 		return
 	}
-
 	fileInfo, err := os.Stat(filePath)
 	if err != nil {
 		w.WriteHeader(404)
@@ -45,6 +44,14 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 		w.Write([]byte(page))
 	} else {
+		if enableIndex {
+			pathChunks := strings.Split(r.RequestURI, "/")
+			if pathChunks[len(pathChunks)-1] == "index.html" {
+				indexContent, _ := ioutil.ReadFile(filePath)
+				w.Write(indexContent)
+				return
+			}
+		}
 		http.ServeFile(w, r, filePath)
 	}
 
