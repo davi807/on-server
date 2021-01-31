@@ -29,4 +29,5 @@ Command-line flags list.
 
 * ``-send-limit`` Maximum allowed data to send in MegaBytes (default 64)
 * ``-show-ip6`` Show IP6 addresses in list if 'ip' not provided
-        
+
+* ``-enable-index`` Fix build-in server limit and enable to load index.html file 
