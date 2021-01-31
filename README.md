@@ -1,6 +1,6 @@
 # on-server
 
-Web file server for download and upload files. Userful for quick file sharing.
+Web file server for download and upload files. Useful for quick file sharing.
 
 ### Installation
 
