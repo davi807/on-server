@@ -55,5 +55,5 @@ func log(r *http.Request) {
 	if l := len(method); l < 4 {
 		method += " "
 	}
-	println(method + sep + time.Now().Format("2-1-2006 21:04:05") + sep + r.URL.RequestURI())
+	println(method + sep + time.Now().Format("2-1-2006 15:04:05") + sep + r.URL.RequestURI())
 }
